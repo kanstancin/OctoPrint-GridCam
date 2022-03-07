@@ -21,3 +21,9 @@ the plugin manager.
 ```angular2html
 https://docs.octoprint.org/en/master/plugins/gettingstarted.html
 ```
+
+## Video streaming
+
+1. run OBS, select video and stream
+2. run ```bash rtm_to_http.sh```
+3. connect to webcam over ```http://localhost:8888/videostream.cgi```

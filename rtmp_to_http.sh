@@ -1,0 +1,1 @@
+cvlc -I dummy rtmp://127.0.0.1/live --sout "#transcode{vcodec=mjpg,quality=3,fps=5,acodec=none,width=1280,height=720}:standard{access=http{mime=multipart/x-mixed-replace; boundary=7b3cc56e5f51db803f790dad720ed50a},mux=mpjpeg,dst=:8888/videostream.cgi}" 2>/dev/null
