@@ -15,3 +15,9 @@ the plugin manager.
 ## Configuration
 
 **TODO:** Describe your plugin's configuration options (if any).
+
+## Basics
+
+```angular2html
+https://docs.octoprint.org/en/master/plugins/gettingstarted.html
+```
