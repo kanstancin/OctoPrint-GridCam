@@ -2,7 +2,10 @@
 
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from octoprint.util.comm import parse_firmware_line
+import logging
 
+import re
 import octoprint.plugin
 import flask
 import os
@@ -40,7 +43,7 @@ class HelloWorldPlugin(octoprint.plugin.StartupPlugin,
     @octoprint.plugin.BlueprintPlugin.route("/echo", methods=["GET"])
     def getCameraImage(self):
         result = ""
-        self._logger.info("Hello World! \n\n\n\n\n(more: )")
+        # self._logger.info("Hello World! \n\n\n\n\n(more: )")
         imagePath = "data/saved_img.png"
         ret, img = self.get_img_stream()
         retval,  buffer = cv.imencode('.png', img)
@@ -66,12 +69,30 @@ class HelloWorldPlugin(octoprint.plugin.StartupPlugin,
                     result = flask.jsonify(
                         error="Unable to fetch image. Check octoprint log for details."
                     )
+            self._printer.commands("M114")
         return flask.make_response(result, 200)
 
     def get_img_stream(self):
         ret, img = self.cam.read()
         # self.cam.release()
         return ret, img
+
+    def detect_machine_type(self, comm, line, *args, **kwargs):
+        # if "MACHINE_TYPE" not in line:
+        #     return line
+        #
+        # # Create a dict with all the keys/values returned by the M115 request
+        # printer_data = parse_firmware_line(line)
+        #
+        # logging.getLogger("octoprint.plugin." + __name__).info(
+        #     "Machine type detected\n\n\n: {machine}.\n\n\n".format(machine=printer_data["MACHINE_TYPE"]))
+
+        pattern = "X:([-+]?[0-9.]+) Y:([-+]?[0-9.]+) Z:([-+]?[0-9.]+) E:([-+]?[0-9.]+)"
+        result = re.findall(pattern, line)
+        if len(result) == 1:
+            self._logger.info(result[0])
+
+        return line
 
 # class HelloWorldPlugin(octoprint.plugin.BlueprintPlugin):
 #     def on_after_startup(self):
@@ -91,4 +112,7 @@ class HelloWorldPlugin(octoprint.plugin.StartupPlugin,
 __plugin_name__ = "helloworld"
 __plugin_pythoncompat__ = ">=2.7,<4"
 __plugin_implementation__ = HelloWorldPlugin()
+__plugin_hooks__ = {
+    "octoprint.comm.protocol.gcode.received": __plugin_implementation__.detect_machine_type
+}
 

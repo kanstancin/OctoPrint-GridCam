@@ -123,7 +123,8 @@ $(function() {
             //     }
             // });
             // $.get("/plugin/helloworld/echo/");
-            setInterval(function() {self._getImage('BIM');}, 10)
+            // setInterval(function() {self._getImage('BIM');}, 100)
+            self._getImage('BIM');
             // self._getImage("BIM");
         };
 
