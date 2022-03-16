@@ -10,25 +10,6 @@ $(function() {
         // this will hold the URL entered in the text field
         self.newUrl = ko.observable();
 
-        // self._getImage = function(imagetype, callback) {
-        //     $.ajax({
-        //         url: "/plugin/helloworld/echo/",
-        //         type: "GET",
-        //         dataType: "json",
-        //         contentType: "application/json; charset=UTF-8",
-        //         //data: JSON.stringify(data),
-        //         success: function(response) {
-        //             if(response.hasOwnProperty("src")) {
-        //                 self._drawImage(response.src);
-        //             }
-        //             if(response.hasOwnProperty("error")) {
-        //                 alert(response.error);
-        //             }
-        //             if (callback) callback();
-        //         }
-        //     });
-        // };
-
         self._headCanvas = document.getElementById('headCanvas');
         // this will be called when the user clicks the "Go" button and set the iframe's URL to
         // the entered URL
@@ -57,26 +38,6 @@ $(function() {
             }
             localimg.src = img;
         };
-        // This will get called before the HelloWorldViewModel gets bound to the DOM, but after its
-        // dependencies have already been initialized. It is especially guaranteed that this method
-        // gets called _after_ the settings have been retrieved from the OctoPrint backend and thus
-        // the SettingsViewModel been properly populated.
-
-        // self.onBeforeBinding = function() {
-        //     self.newUrl(self.settings.settings.plugins.helloworld.url());
-        //     self.goToUrl();
-        // }
-
-        // self.videoStreamActive = ko.observable(false);
-        // self.startVideo = function(url) {
-        //     self.videoStreamActive(true);
-        //     self.videoTimer = setInterval(function(){ self._drawImage(url, true); }, 100);
-        // };
-        //
-        // self.stopVideo = function() {
-        //     clearInterval(self.videoTimer);
-        //     self.videoStreamActive(false);
-        // };
 
         self._getImage = function(imagetype, callback) {
             $.ajax({
@@ -98,34 +59,7 @@ $(function() {
         };
 
         self.goToUrl = function() {
-            // self.currentUrl(self.newUrl());
-            // self.startVideo("http://localhost:8888/videostream.cgi")
-
-            // self._getImage('BED');
-            // var ctx=self._headCanvas.getContext("2d");
-            // ctx.fillStyle = "#44ff47";
-            // ctx.fillRect(0, 0, 400, 300);
-
-            // ajax({
-            //     url: "/plugin/helloworld/echo/",
-            //     type: "GET",
-            //     dataType: "json",
-            //     contentType: "application/json; charset=UTF-8",
-            //     //data: JSON.stringify(data),
-            //     success: function(response) {
-            //         if(response.hasOwnProperty("src")) {
-            //             self._drawImage(response.src);
-            //         }
-            //         if(response.hasOwnProperty("error")) {
-            //             alert(response.error);
-            //         }
-            //         if (callback) callback();
-            //     }
-            // });
-            // $.get("/plugin/helloworld/echo/");
-            // setInterval(function() {self._getImage('BIM');}, 100)
-            self._getImage('BIM');
-            // self._getImage("BIM");
+            setInterval(function() {self._getImage('BIM');}, 200)
         };
 
 
