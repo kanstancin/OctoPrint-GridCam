@@ -12,8 +12,15 @@ import os
 import base64
 
 import cv2 as cv
+import os
+import shutil
 
-class HelloWorldPlugin(octoprint.plugin.StartupPlugin,
+dir = 'images'
+if os.path.exists(dir):
+    shutil.rmtree(dir)
+os.makedirs(dir)
+
+class GridCamPlugin(octoprint.plugin.StartupPlugin,
                        octoprint.plugin.TemplatePlugin,
                        octoprint.plugin.SettingsPlugin,
                        octoprint.plugin.AssetPlugin,
@@ -23,11 +30,11 @@ class HelloWorldPlugin(octoprint.plugin.StartupPlugin,
         self.cam = ''
 
     def on_after_startup(self):
-        self._logger.info("Hello World! \n\n\n\n\n(more: %s)" % self._settings.get(["url"]))
+        self._logger.info("GridCam \n(more: %s)" % self._settings.get(["url"]))
         self.cam = cv.VideoCapture(0)
 
     def get_settings_defaults(self):
-     return dict(url="https://en.wikipedia.org/wiki/Hello_world")
+     return dict(url="https://mosaicmfg.com/", z_offset=0.7)
 
     def get_template_configs(self):
      return [
@@ -38,7 +45,7 @@ class HelloWorldPlugin(octoprint.plugin.StartupPlugin,
     def get_assets(self):
      return dict(
          js=["js/flask_test.js"],
-         css=["css/helloworld.css"]
+         css=["css/gridcam.css"]
      )
 
     @octoprint.plugin.BlueprintPlugin.route("/echo", methods=["GET"])
@@ -46,7 +53,9 @@ class HelloWorldPlugin(octoprint.plugin.StartupPlugin,
         result = ""
         # self._logger.info("Hello World! \n\n\n\n\n(more: )")
         ret, img = self.get_img_stream()
-        dim = (640, 480)
+        shape = img.shape[:2]
+        res = 480
+        dim = (int(res * shape[1] / shape[0]), res)
         img = cv.resize(img, dim, interpolation=cv.INTER_AREA)
 
         retval,  buffer = cv.imencode('.jpg', img)
@@ -86,16 +95,16 @@ class HelloWorldPlugin(octoprint.plugin.StartupPlugin,
             ret, img = self.get_img_stream()
             im_name = f"images/img_X{result[0][0]}_Y{result[0][1]}.png"
             cv.imwrite(im_name, img)
-            self._logger.info(line)
+            # self._logger.info(line)
             self._logger.info(f"\nsaving image: {im_name}\n")
-        else:
-            self._logger.info(line)
+        # else:
+        #     self._logger.info(line)
         return line
 
 
 __plugin_name__ = "GridCam"
 __plugin_pythoncompat__ = ">=2.7,<4"
-__plugin_implementation__ = HelloWorldPlugin()
+__plugin_implementation__ = GridCamPlugin()
 __plugin_hooks__ = {
     "octoprint.comm.protocol.gcode.received": __plugin_implementation__.parse_gcode_imsave
 }

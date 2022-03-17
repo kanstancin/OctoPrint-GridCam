@@ -82,6 +82,33 @@ def get_grid_gcode(speed, grids_num, z_offset, add_M114, delay):
 
     return lines
 
+import sys, getopt
 
-filepath = "data/template.gcode"
-create_gcode_file(filepath, speed=1500, grids_num=10, z_offset=0.7)
+import sys, getopt
+
+def main(argv):
+    z_offset = 0.7
+    speed = 1500
+    grids_num = 10
+    try:
+        opts, args = getopt.getopt(argv,"hs:g:z:",["speed=, grids_num=, zoffset="])
+    except getopt.GetoptError:
+        print ('usage: python tests/gen_grid.py -s <speed> -g <grids_num> -z <zoffset>')
+        sys.exit(2)
+    for opt, arg in opts:
+        if opt == '-h':
+            print ('usage: python tests/gen_grid.py -s <speed> -g <grids_num> -z <zoffset>')
+            sys.exit()
+        elif opt in ("-s", "--speed"):
+            speed = arg
+        elif opt in ("-g", "--grids_num"):
+            grids_num = arg
+        elif opt in ("-z", "--zoffset"):
+            z_offset = arg
+
+    filepath = "data/template.gcode"
+    create_gcode_file(filepath, speed=int(speed), grids_num=int(grids_num), z_offset=z_offset)
+
+
+if __name__ == "__main__":
+   main(sys.argv[1:])

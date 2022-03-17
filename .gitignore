@@ -8,4 +8,6 @@ dist
 .DS_Store
 *.zip
 octoprint_helloworld/__pycache__/
-images/*
+images/*.png
+images/*.jpg
+gcodes/*.gcode

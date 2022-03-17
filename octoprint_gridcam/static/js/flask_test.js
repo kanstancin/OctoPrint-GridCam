@@ -1,5 +1,5 @@
 $(function() {
-    function HelloWorldViewModel(parameters) {
+    function GridCamViewModel(parameters) {
         var self = this;
 
         self.settings = parameters[0];
@@ -9,6 +9,9 @@ $(function() {
 
         // this will hold the URL entered in the text field
         self.newUrl = ko.observable();
+
+        // this will hold the URL entered in the text field
+        self.zOffset = ko.observable();
 
         self._headCanvas = document.getElementById('headCanvas');
         // this will be called when the user clicks the "Go" button and set the iframe's URL to
@@ -22,14 +25,6 @@ $(function() {
                 var scale = Math.min(ctx.canvas.clientWidth/w, ctx.canvas.clientHeight/h,1);
                 ctx.drawImage(localimg, 0, 0, w*scale, h*scale);
 
-                // crosshairs
-                ctx.beginPath();
-                ctx.strokeStyle = "#000000";
-                ctx.lineWidth = 1;
-                ctx.fillStyle = "#000000";
-                ctx.fillRect(0, ((h*scale)/2)-0.5, w*scale, 1);
-                ctx.fillRect(((w*scale)/2)-0.5, 0, 1, h*scale);
-
                 // Avoid memory leak. Not certain if this is implemented correctly, but GC seems to free the memory every now and then.
                 localimg = undefined;
             };
@@ -41,7 +36,7 @@ $(function() {
 
         self._getImage = function(imagetype, callback) {
             $.ajax({
-                url: PLUGIN_BASEURL + "helloworld/echo?imagetype=" + imagetype,
+                url: PLUGIN_BASEURL + "gridcam/echo?imagetype=" + imagetype,
                 type: "GET",
                 dataType: "json",
                 contentType: "application/json; charset=UTF-8",
@@ -69,7 +64,7 @@ $(function() {
     // information to the global variable OCTOPRINT_VIEWMODELS
     OCTOPRINT_VIEWMODELS.push([
         // This is the constructor to call for instantiating the plugin
-        HelloWorldViewModel,
+        GridCamViewModel,
 
         // This is a list of dependencies to inject into the plugin, the order which you request
         // here is the order in which the dependencies will be injected into your view model upon
@@ -77,7 +72,7 @@ $(function() {
         ["settingsViewModel"],
 
         // Finally, this is the list of selectors for all elements we want this view model to be bound to.
-        ["#tab_plugin_helloworld"]
+        ["#tab_plugin_gridcam"]
     ]);
 });
 
