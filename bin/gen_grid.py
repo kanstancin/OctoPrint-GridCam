@@ -81,7 +81,7 @@ def get_grid_gcode(speed, grids_num, z_offset, add_M114, delay):
             # add delay
             lines.append(f"G4 P{delay} \n")
             if add_M114:
-                lines.append("M114_REALTIME \n")
+                lines.append("M114_REALTIME R \n")
             lines.append(f"G4 P{delay} \n\n")
 
     return lines
