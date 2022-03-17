@@ -14,7 +14,10 @@ OctoPrint plugin to stream and save images.
    python3
    import cv2
    ```
-
+3. NumPy
+   ```bash
+   python3 -m pip install numpy
+   ```
 ## Installation
 
 1. Install OctoPrint if not installed
