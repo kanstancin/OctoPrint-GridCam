@@ -1,6 +1,6 @@
 $(function() {
     function GridCamViewModel(parameters) {
-        var self = this;
+        var self = this; 
 
         self.settings = parameters[0];
 
@@ -54,7 +54,7 @@ $(function() {
         };
 
         self.goToUrl = function() {
-            setInterval(function() {self._getImage('BIM');}, 200)
+            setInterval(function() {self._getImage('BIM');}, 100)
         };
 
 
