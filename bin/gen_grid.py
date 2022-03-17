@@ -93,11 +93,11 @@ def main(argv):
     try:
         opts, args = getopt.getopt(argv,"hs:g:z:",["speed=, grids_num=, zoffset="])
     except getopt.GetoptError:
-        print ('usage: python tests/gen_grid.py -s <speed> -g <grids_num> -z <zoffset>')
+        print ('usage: python bin/gen_grid.py -s <speed> -g <grids_num> -z <zoffset>')
         sys.exit(2)
     for opt, arg in opts:
         if opt == '-h':
-            print ('usage: python tests/gen_grid.py -s <speed> -g <grids_num> -z <zoffset>')
+            print ('usage: python bin/gen_grid.py -s <speed> -g <grids_num> -z <zoffset>')
             sys.exit()
         elif opt in ("-s", "--speed"):
             speed = arg
@@ -107,7 +107,8 @@ def main(argv):
             z_offset = arg
 
     filepath = "data/template.gcode"
-    create_gcode_file(filepath, speed=int(speed), grids_num=int(grids_num), z_offset=z_offset)
+    create_gcode_file(filepath, speed=int(speed), grids_num=int(grids_num), z_offset=z_offset,
+                      add_M114=True, delay=200)
 
 
 if __name__ == "__main__":

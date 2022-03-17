@@ -12,5 +12,5 @@ dir_out = "data/"
 img_name = f"saved_img2.png"
 cv2.imwrite(os.path.join(dir_out, img_name), img)
 print(f"saved image: `{img_name}`")
-
+ 
 cam.release()
