@@ -1,5 +1,3 @@
-
-
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from octoprint.util.comm import parse_firmware_line
@@ -54,7 +52,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         # self._logger.info("Hello World! \n\n\n\n\n(more: )")
         ret, img = self.get_img_stream()
         shape = img.shape[:2]
-        res = 480
+        res = 360
         dim = (int(res * shape[1] / shape[0]), res)
         img = cv.resize(img, dim, interpolation=cv.INTER_AREA)
 
@@ -93,7 +91,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         result = re.findall(pattern, line)
         if len(result) == 1:
             ret, img = self.get_img_stream()
-            im_name = f"images/img_X{result[0][0]}_Y{result[0][1]}.png"
+            im_name = f"images/img_X{result[0][0]}_Y{result[0][1]}.jpg"
             cv.imwrite(im_name, img)
             # self._logger.info(line)
             self._logger.info(f"\nsaving image: {im_name}\n")
