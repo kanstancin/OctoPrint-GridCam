@@ -11,5 +11,6 @@ octoprint_helloworld/__pycache__/
 images/*.png
 images/*.jpg
 gcodes/*.gcode
+!gcodes/grid_F1500_GRIDS10_Z0.7.gcode
 .idea/
 node_modules/
