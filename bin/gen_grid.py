@@ -1,4 +1,5 @@
 import numpy as np
+import os
 
 
 def get_flag_positions(filepath):
@@ -26,7 +27,10 @@ def create_gcode_file(template_path, speed, grids_num=10, z_offset=0.7, add_M114
     flag_line_num = get_flag_positions(template_path)
     template = get_template(template_path, flag_line_num)
 
-    gcode_filename = f"gcodes/grid_F{speed}_GRIDS{grids_num}_Z{z_offset}.gcode"
+    gcode_out_path = "gcodes/"
+    if not os.path.exists(gcode_out_path):
+        os.makedirs(gcode_out_path)
+    gcode_filename = f"{gcode_out_path}/grid_F{speed}_GRIDS{grids_num}_Z{z_offset}.gcode"
     with open(gcode_filename, "w") as f:
         f.writelines(template[0])
         f.write("\n\n")  # main gcode
@@ -77,7 +81,7 @@ def get_grid_gcode(speed, grids_num, z_offset, add_M114, delay):
             # add delay
             lines.append(f"G4 P{delay} \n")
             if add_M114:
-                lines.append("M114_LEGACY \n")
+                lines.append("M114_REALTIME \n")
             lines.append(f"G4 P{delay} \n\n")
 
     return lines

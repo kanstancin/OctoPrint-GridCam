@@ -6,14 +6,13 @@ import logging
 import re
 import octoprint.plugin
 import flask
-import os
 import base64
 
 import cv2 as cv
 import os
 import shutil
 
-dir = 'images'
+dir = 'images/'
 if os.path.exists(dir):
     shutil.rmtree(dir)
 os.makedirs(dir)
