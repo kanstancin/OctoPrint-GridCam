@@ -1,28 +1,62 @@
-# OctoPrint-Helloworld
+# OctoPrint-GridCam
 
-**TODO:** Describe what your plugin does.
+OctoPrint plugin to stream and save images.
 
-## Setup
+## Requirements
 
-Install via the bundled [Plugin Manager](https://docs.octoprint.org/en/master/bundledplugins/pluginmanager.html)
-or manually using this URL:
+1. Python 3, plugin was tested with Python 3.8.10
+2. OpenCV 
+   1. To install OpenCV do
+   ```bash
+   sudo apt-get install python3-opencv
+   
+   # Test
+   python3
+   import cv2
+   ```
 
-    https://github.com/you/OctoPrint-Helloworld/archive/master.zip
+## Installation
 
-**TODO:** Describe how to install your plugin, if more needs to be done than just installing it via pip or through
-the plugin manager.
+1. Install OctoPrint if not installed
+```bash
+git clone https://github.com/OctoPrint/OctoPrint
+cd OctoPrint
+python3 -m pip install -e .[develop,plugins]
 
-## Configuration
-
-**TODO:** Describe your plugin's configuration options (if any).
-
-## Basics
-
-```angular2html
-https://docs.octoprint.org/en/master/plugins/gettingstarted.html
+# Test
+octoprint --help
+```
+2. Install this plugin
+```bash
+git clone https://github.com/kanstancin/OctoPrint-GridCam.git
+cd OctoPrint-GridCam
+octoprint dev plugin:install
 ```
 
-## Video streaming
+## How to use
+
+1. Generate gcode for the grid
+```bash
+# select desired speed, number of grids, and z_offset, see the 
+# following command for help
+# python bin/gen_grid.py -h
+
+python3 bin/gen_grid.py -s 500  -g 10 -z 0.7
+```
+
+2. Start Octoprint
+```bash
+octoprint serve
+```
+
+3. Start streaming to test if camera works (optional)
+   1. Go to ```GridCam``` tab in Octoprint and click ```Start Stream``` button
+
+4. Connect printer and upload the gcode file from 
+```OctoPrint-GridCam/gcodes/``` folder
+5. Start printing, images should appear in ```OctoPrint-GridCam/images/``` folder
+
+## Virtual video streaming (optional) 
 
 1. run OBS, select video and stream
 2. run ```bash rtm_to_http.sh```
