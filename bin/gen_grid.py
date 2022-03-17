@@ -107,7 +107,7 @@ def main(argv):
             z_offset = arg
 
     filepath = "data/template.gcode"
-    create_gcode_file(filepath, speed=int(speed), grids_num=int(grids_num), z_offset=z_offset,
+    create_gcode_file(filepath, speed=int(speed), grids_num=int(grids_num), z_offset=float(z_offset),
                       add_M114=True, delay=200)
 
 

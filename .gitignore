@@ -11,3 +11,4 @@ octoprint_helloworld/__pycache__/
 images/*.png
 images/*.jpg
 gcodes/*.gcode
+.idea/
