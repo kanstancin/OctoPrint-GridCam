@@ -31,7 +31,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         self.cam = cv.VideoCapture(0)
 
     def get_settings_defaults(self):
-     return dict(url="https://mosaicmfg.com/", z_offset=0.7)
+     return dict(url="https://github.com/kanstancin/OctoPrint-GridCam/tree/master", z_offset=0.7)
 
     def get_template_configs(self):
      return [

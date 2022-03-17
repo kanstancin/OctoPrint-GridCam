@@ -12,3 +12,4 @@ images/*.png
 images/*.jpg
 gcodes/*.gcode
 .idea/
+node_modules/
