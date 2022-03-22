@@ -44,6 +44,8 @@ octoprint dev plugin:install
 # following command for help
 # python bin/gen_grid.py -h
 
+# for the first run parameters below should be good. however, feel
+# free to change them
 python3 bin/gen_grid.py -s 1500  -g 10 -z 0.7
 ```
 
