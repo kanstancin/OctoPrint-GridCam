@@ -2,6 +2,14 @@
 
 OctoPrint plugin to stream and save images.
 
+
+
+
+![plugin_pic](.mdfiles/plugin.png)
+
+
+
+
 ## Requirements
 
 1. Python 3, plugin was tested with Python 3.8.10
@@ -42,10 +50,6 @@ octoprint dev plugin:install
 ```bash
 octoprint serve
 ```
-
-
-![plugin_pic](.mdfiles/plugin.png)
-
 
 
 2. Start streaming to test if camera works (optional)
