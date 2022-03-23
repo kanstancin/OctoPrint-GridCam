@@ -43,6 +43,11 @@ octoprint dev plugin:install
 octoprint serve
 ```
 
+
+![plugin_pic](.mdfiles/plugin.png)
+
+
+
 2. Start streaming to test if camera works (optional)
    1. Go to ```GridCam``` tab in Octoprint and click ```Start Stream``` button
 
