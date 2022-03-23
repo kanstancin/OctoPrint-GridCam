@@ -38,24 +38,20 @@ octoprint dev plugin:install
 
 ## How to use
 
-1. Generate gcode for the grid
-```bash
-# select desired speed, number of grids, and z_offset, see the 
-# following command for help
-# python bin/gen_grid.py -h
-
-# for the first run parameters below should be good. however, feel
-# free to change them
-python3 bin/gen_grid.py -s 1500  -g 10 -z 0.7
-```
-
-2. Start Octoprint
+1. Start Octoprint
 ```bash
 octoprint serve
 ```
 
-3. Start streaming to test if camera works (optional)
+2. Start streaming to test if camera works (optional)
    1. Go to ```GridCam``` tab in Octoprint and click ```Start Stream``` button
+
+3. Generate gcode for the grid
+   1. Set gcode parameters (for the first run default parameters should be good)
+
+   ![gcode_params](.mdfiles/grid_params.png)
+
+   2. Click "Generate Gcode" button. Gcode file should appear in "gcodes/" folder.
 
 4. Connect printer and upload the gcode file from 
 ```OctoPrint-GridCam/gcodes/``` folder
