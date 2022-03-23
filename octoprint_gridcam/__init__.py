@@ -12,10 +12,11 @@ import cv2 as cv
 import os
 import shutil
 
+from bin.gen_grid import create_gcode_file
+
 dir = 'images/'
-if os.path.exists(dir):
-    shutil.rmtree(dir)
-os.makedirs(dir)
+if not os.path.exists(dir):
+    os.makedirs(dir)
 
 class GridCamPlugin(octoprint.plugin.StartupPlugin,
                        octoprint.plugin.TemplatePlugin,
@@ -31,7 +32,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         self.cam = cv.VideoCapture(0)
 
     def get_settings_defaults(self):
-     return dict(url="https://github.com/kanstancin/OctoPrint-GridCam/tree/master", z_offset=0.7)
+     return dict(url=2, speed=1500, grids_num=10, z_offset=0.7)
 
     def get_template_configs(self):
      return [
@@ -77,6 +78,53 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
                         error="Unable to fetch image. Check octoprint log for details."
                     )
             # self._printer.commands("M114")
+        return flask.make_response(result, 200)
+
+    @octoprint.plugin.BlueprintPlugin.route("/gcode", methods=["GET"])
+    def genGcode(self):
+        result = ""
+        if "controls" in flask.request.values:
+            gcode_params = flask.request.values["controls"]
+            gcode_params = gcode_params.split(',')
+            if True:
+                try:
+                    # self._logger.info(gcode_params)
+                    filepath = "data/template.gcode"
+                    create_gcode_file(filepath, speed=int(gcode_params[0]), grids_num=int(gcode_params[1]),
+                                      z_offset=float(gcode_params[2]), add_M114=True, delay=200)
+                    result = flask.jsonify(
+                        src="done"
+                    )
+                except IOError:
+                    result = flask.jsonify(
+                        error="Unable to open Webcam stream"
+                    )
+            # else:
+            #     result = flask.jsonify(
+            #         error="Unable to fetch image. Check octoprint log for details."
+            #     )
+            # self._printer.commands("M114")
+        return flask.make_response(result, 200)
+
+    @octoprint.plugin.BlueprintPlugin.route("/clear_folder", methods=["GET"])
+    def genGcode(self):
+        result = ""
+        if True:
+            try:
+                self._logger.info("clear")
+                dir = 'images/'
+                if os.path.exists(dir):
+                    shutil.rmtree(dir)
+                os.makedirs(dir)
+            except IOError:
+                result = flask.jsonify(
+                    error="Unable to open Webcam stream"
+                )
+        # else:
+        #     result = flask.jsonify(
+        #         error="Unable to fetch image. Check octoprint log for details."
+        #     )
+        # self._printer.commands("M114")
         return flask.make_response(result, 200)
 
     def get_img_stream(self):

@@ -53,6 +53,55 @@ $(function() {
             });
         };
 
+        self._generateGcode = function(controls, callback) {
+            $.ajax({
+                url: PLUGIN_BASEURL + "gridcam/gcode?controls=" + controls,
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=UTF-8",
+                //data: JSON.stringify(data),
+                success: function(response) {
+                    // if(response.hasOwnProperty("src")) {
+                    //     self._drawImage(response.src);
+                    // }
+                    // if(response.hasOwnProperty("error")) {
+                    //     alert(response.error);
+                    // }
+                    if (callback) callback();
+                }
+            });
+        };
+
+        self.generateGcode = function() {
+            msg = [self.settings.settings.plugins.gridcam.speed(),
+                   self.settings.settings.plugins.gridcam.grids_num(),
+                   self.settings.settings.plugins.gridcam.z_offset()].join(',');
+            self._generateGcode(msg);
+        };
+
+        self._clearImageFolder = function(callback) {
+            $.ajax({
+                url: PLUGIN_BASEURL + "gridcam/clear_folder",
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=UTF-8",
+                //data: JSON.stringify(data),
+                success: function(response) {
+                    // if(response.hasOwnProperty("src")) {
+                    //     self._drawImage(response.src);
+                    // }
+                    // if(response.hasOwnProperty("error")) {
+                    //     alert(response.error);
+                    // }
+                    if (callback) callback();
+                }
+            });
+        };
+
+        self.clearImageFolder = function() {
+            self._clearImageFolder();
+        };
+
         self.goToUrl = function() {
             setInterval(function() {self._getImage('BIM');}, 100)
         };

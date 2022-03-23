@@ -1,19 +1,92 @@
+<h1>Streaming</h1>
 <div class="input-append">
-{#    <input type="text" class="input-xxlarge" data-bind="value: newUrl">#}
     <button class="btn btn-primary" data-bind="click: goToUrl">{{ _('Start Stream') }}</button>
-{#    <button class="btn btn-primary" data-bind="click: clearImageFolder">{{ _('Remove Images') }}</button>#}
-{#    <label>#}
-{#        Feed rate modifier:#}
-{#    </label>#}
 </div>
 
-{#<div class="input-append control-box">#}
-{#    <input type="number" class="input-mini" min="1" step="1" data-bind="textInput: settings.plugins.helloworld.z_offset">#}
-{#    <span class="add-on">%</span>#}
-{#    <button class="btn" data-bind="click: generateGcode" disabled="">Set</button>#}
-{#</div>#}
+
+<h1>Set grid parameters</h1>
+<div style="width: 100%; display: table;">
+    <div style="display: table-row">
+        <div style="{#  width: 100px; #}
+                display: table-cell;">
+                Speed:
+        </div>
+        <div style="display: table-cell;"> Number of grids:</div>
+        <div style="display: table-cell;"> Z offset:</div>
+    </div>
+    <div style="display: table-row">
+        <div style="{#  width: 100px; #} display: table-cell;">
+            <div class="input-append control-box">
+            <input type="number" class="input-mini" min="5" step="1" data-bind="textInput: settings.settings.plugins.gridcam.speed">
+            <span class="add-on">mm/min</span>
+                </div>
+        </div>
+        <div style="display: table-cell;">
+            <div class="input-append control-box">
+            <input type="number" class="input-mini" min="3" step="1" data-bind="textInput: settings.settings.plugins.gridcam.grids_num">
+            <span class="add-on">qty</span>
+            </div>
+        </div>
+        <div style="display: table-cell;" >
+            <div class="input-append control-box">
+            <input type="number" class="input-mini" min="0.5" step="0.1" data-bind="textInput: settings.settings.plugins.gridcam.z_offset">
+            <span class="add-on">mm</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<h1>Controls</h1>
+<div style="width: 100%; display: table;">
+    <div style="display: table-row">
+        <div style="{#  width: 100px; #}
+                display: table-cell;">
+                <div class="gcode control-box">
+            <button class="btn btn-block control-box" data-bind="click: generateGcode">{{ _('Generate Gcode') }}</button>
+        </div>
+        </div>
+        <div style="display: table-cell;">
+        <div class="gcode control-box">
+            <button class="btn btn-block control-box" data-bind="click: clearImageFolder">{{ _('Remove Images') }}</button>
+        </div></div>
+{#        <div style="display: table-cell;">#}
+{#                <div class="input-append">#}
+{#            <button class="btn btn-primary" data-bind="click: goToUrl">{{ _('Start Stream') }}</button>#}
+{#        </div>#}
+{#        </div>#}
+    </div>
+</div>
 
 {#<iframe data-bind="attr: {src: currentUrl}"></iframe>#}
 
+<h1></h1>
 <canvas id="headCanvas" width="585" height="410"></canvas>
- 
+
+{#<div id="control-jog-feedrate" class="jog-panel">#}
+{#        <label>Feed rate modifier: <a class="text-info" href="javascript:void(0)" data-bind="popover: {placement: 'top', trigger: 'hover', title: 'Please note!', content: 'The feed rate can only be set, it cannot be read back from the firmware due to a limitation of the communication protocol. There is no way to show the current setting.'}" data-original-title="" title=""><i class="fas fa-info-circle"></i></a></label>#}
+{#        <div class="input-append control-box">#}
+{#            <input type="number" class="input-mini" min="1" step="1" data-bind="textInput: feedRate, event: { blur: resetFeedRateDisplay, focus: cancelFeedRateDisplayReset }, css: { pulsate_text_opacity: feedRateResetter() !== undefined }">#}
+{#            <span class="add-on">%</span>#}
+{#            <button class="btn" data-bind="enable: isOperational() &amp;&amp; feedRate(), click: function() { $root.sendFeedRateCommand() }" disabled="">Set</button>#}
+{#        </div>#}
+{#</div>#}
+
+{#<div class="float-container" style="border: 3px solid #fff;#}
+{#    padding: 20px;">#}
+{##}
+{#  <div class="float-child" style="width: 50%;#}
+{#    float: left;#}
+{#    padding: 20px;#}
+{#    border: 2px solid red;">#}
+{#    <div class="green">Float Column 1</div>#}
+{#  </div>#}
+{##}
+{#  <div class="float-child" style="width: 50%;#}
+{#    float: left;#}
+{#    padding: 20px;#}
+{#    border: 2px solid red;">#}
+{#    <div class="blue">Float Column 2</div>#}
+{#  </div>#}
+{##}
+{#</div>#}
+
