@@ -37,7 +37,14 @@ python3 -m pip install -e .[develop,plugins]
 # Test
 octoprint --help
 ```
-2. Install the plugin. Run the following in the terminal:
+2. Install the plugin. If ```octoprint``` command is **not available** in the terminal, 
+run the following in the terminal:
+
+```bash
+pip install https://github.com/kanstancin/OctoPrint-GridCam/archive/master.zip
+```
+
+Second option. If ```octoprint``` command is **available** 
 ```bash
 git clone https://github.com/kanstancin/OctoPrint-GridCam.git
 cd OctoPrint-GridCam
