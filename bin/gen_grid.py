@@ -86,7 +86,6 @@ def get_grid_gcode(speed, grids_num, z_offset, add_M114, delay):
 
     return lines
 
-import sys, getopt
 
 import sys, getopt
 

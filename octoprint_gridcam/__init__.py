@@ -12,7 +12,14 @@ import cv2 as cv
 import os
 import shutil
 
-from bin.gen_grid import create_gcode_file
+# from OctoPrint-GridCam.bin.gen_grid import create_gcode_file
+import sys
+# insert at 1, 0 is the script path (or '' in REPL)
+# sys.path.insert(1, 'bin')
+sys.path.append('.')
+
+from bin import  gen_grid
+
 
 dir = 'images/'
 if not os.path.exists(dir):
