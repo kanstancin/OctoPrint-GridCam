@@ -222,7 +222,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         result = re.findall(pattern, line)
         if len(result) == 1:
             ret, img = self.get_img_stream()
-            im_name = f"images/img_X{result[0][0]}_Y{result[0][1]}.jpg"
+            im_name = f"images/img_X{result[0][0]}_Y{result[0][1]}_Z{result[0][2]}.jpg"
             cv.imwrite(im_name, img)
             # self._logger.info(line)
             self._logger.info(f"\nsaving image: {im_name}\n")
