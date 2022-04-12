@@ -113,7 +113,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
 
     def on_after_startup(self):
         self._logger.info("GridCam \n(more: %s)" % self._settings.get(["url"]))
-        self.cam = cv.VideoCapture()
+        self.cam = cv.VideoCapture(0)
 
     def get_settings_defaults(self):
      return dict(url=2, speed=1500, grids_num=10, z_offset=0.7)
