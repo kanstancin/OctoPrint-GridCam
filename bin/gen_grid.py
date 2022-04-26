@@ -111,7 +111,7 @@ def main(argv):
 
     filepath = "data/template_no_homing.gcode"
     create_gcode_file(filepath, speed=int(speed), grids_num=int(grids_num), z_offset=float(z_offset),
-                      add_M114=True, delay=200)
+                      add_M114=True, delay=500)
 
 
 if __name__ == "__main__":
