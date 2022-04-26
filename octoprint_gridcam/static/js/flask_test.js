@@ -73,10 +73,11 @@ $(function() {
         };
 
         self.generateGcode = function() {
-            msg = [self.settings.settings.plugins.gridcam.speed(),
-                   self.settings.settings.plugins.gridcam.grids_num(),
-                   self.settings.settings.plugins.gridcam.z_offset()].join(',');
-            self._generateGcode(msg);
+            // msg = [self.settings.settings.plugins.gridcam.speed(),
+            //        self.settings.settings.plugins.gridcam.grids_num(),
+            //        self.settings.settings.plugins.gridcam.z_offset()].join(',');
+            // self._generateGcode(msg);
+            self._generateGcode();
         };
 
         self._clearImageFolder = function(callback) {
