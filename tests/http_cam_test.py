@@ -21,6 +21,7 @@ while True:
     a = bytes.find(b'\xff\xd8') #frame starting
     b = bytes.find(b'\xff\xd9') #frame ending
     if a != -1 and b != -1:
+        print(a, b)
         jpg = bytes[a:b+2]
         bytes = bytes[b+2:]
         img = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8), 1)

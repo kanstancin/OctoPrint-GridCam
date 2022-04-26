@@ -112,6 +112,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
 
     def __init__(self):
         self.cam = ''
+        self.stream = ""
 
     def on_after_startup(self):
         self._logger.info("GridCam \n(more: %s)" % self._settings.get(["url"]))
@@ -139,6 +140,8 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         result = ""
         # self._logger.info("Hello World! \n\n\n\n\n(more: )")
         ret, img = self.get_img_stream()
+        while (ret == False):
+            ret, img = self.get_img_stream()
         shape = img.shape[:2]
         res = 360
         dim = (int(res * shape[1] / shape[0]), res)
@@ -219,7 +222,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
 
     def get_img_stream(self):
         #ret, img = self.cam.read()
-        ret = "_"
+        ret = False
         bytes = b''
         bytes += self.stream.read(1024)
         a = bytes.find(b'\xff\xd8')  # frame starting
@@ -228,6 +231,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
             jpg = bytes[a:b + 2]
             bytes = bytes[b + 2:]
             img = cv.imdecode(np.fromstring(jpg, dtype=np.uint8), 1)
+            ret = True
             # cv.imshow('image', img)
             # if cv.waitKey(1) == 27:
             #     cv.destroyAllWindows()
