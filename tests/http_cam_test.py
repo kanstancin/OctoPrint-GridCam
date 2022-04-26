@@ -26,7 +26,9 @@ while True:
         bytes = bytes[b+2:]
         img = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8), 1)
         print(img.shape)
-        # cv2.imshow('image', img)
-        # if cv2.waitKey(1) == 27:
-        #     cv2.destroyAllWindows()
-        #     break
+        cv2.imshow('image', img)
+        stream = urllib.request.urlopen("http://192.168.101.39/webcam/?action=stream")
+        bytes = b''
+        if cv2.waitKey(1) == 27:
+            cv2.destroyAllWindows()
+            break

@@ -236,6 +236,8 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
                 img = cv.imdecode(np.fromstring(jpg, dtype=np.uint8), 1)
                 img = cv.rotate(img, cv.ROTATE_180)
                 ret = True
+                self.stream = urllib.request.urlopen("http://192.168.101.39/webcam/?action=stream")
+                self.bytes = b''
         return ret, img
 
     def parse_gcode_imsave(self, comm, line, *args, **kwargs):
