@@ -197,6 +197,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
 
     @octoprint.plugin.BlueprintPlugin.route("/clear_folder", methods=["GET"])
     def genGcode(self):
+        self._logger.info("\n\n\nsaving gcode...\n\n\n")
         result = ""
         if True:
             try:
