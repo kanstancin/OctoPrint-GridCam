@@ -114,6 +114,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         self.cam = ''
         self.stream = ''
         self.bytes = b''
+        self.img = False
 
     def on_after_startup(self):
         self._logger.info("GridCam \n(more: %s)" % self._settings.get(["url"]))
@@ -141,8 +142,9 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         result = ""
         # self._logger.info("Hello World! \n\n\n\n\n(more: )")
         ret, img = self.get_img_stream()
-        while (ret == False):
-            ret, img = self.get_img_stream()
+        self.img = img
+        # while (ret == False):
+        #     ret, img = self.get_img_stream()
         shape = img.shape[:2]
         res = 360
         dim = (int(res * shape[1] / shape[0]), res)
@@ -222,23 +224,18 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         return flask.make_response(result, 200)
 
     def get_img_stream(self):
-        #ret, img = self.cam.read()
         ret = False
         img = None
-        self.bytes += self.stream.read(1024)
-        a = self.bytes.find(b'\xff\xd8')  # frame starting
-        b = self.bytes.find(b'\xff\xd9')  # frame ending
-        if a != -1 and b != -1:
-            jpg = self.bytes[a:b + 2]
-            self.bytes = self.bytes[b + 2:]
-            img = cv.imdecode(np.fromstring(jpg, dtype=np.uint8), 1)
-            img = cv.rotate(img, cv.ROTATE_180)
-            ret = True
-            # cv.imshow('image', img)
-            # if cv.waitKey(1) == 27:
-            #     cv.destroyAllWindows()
-            #     break
-        # self.cam.release()
+        while(ret == False):
+            self.bytes += self.stream.read(1024)
+            a = self.bytes.find(b'\xff\xd8')  # frame starting
+            b = self.bytes.find(b'\xff\xd9')  # frame ending
+            if a != -1 and b != -1:
+                jpg = self.bytes[a:b + 2]
+                self.bytes = self.bytes[b + 2:]
+                img = cv.imdecode(np.fromstring(jpg, dtype=np.uint8), 1)
+                img = cv.rotate(img, cv.ROTATE_180)
+                ret = True
         return ret, img
 
     def parse_gcode_imsave(self, comm, line, *args, **kwargs):
@@ -246,7 +243,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         pattern = "X:([-+]?[0-9.]+) Y:([-+]?[0-9.]+) Z:([-+]?[0-9.]+) E:([-+]?[0-9.]+)"
         result = re.findall(pattern, line)
         if len(result) == 1:
-            ret, img = self.get_img_stream()
+            ret, img = self.img #self.get_img_stream()
             im_name = f"images/img_X{result[0][0]}_Y{result[0][1]}_Z{result[0][2]}.jpg"
             cv.imwrite(im_name, img)
             # self._logger.info(line)

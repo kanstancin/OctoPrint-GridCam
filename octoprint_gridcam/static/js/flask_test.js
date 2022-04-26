@@ -103,7 +103,7 @@ $(function() {
         };
 
         self.goToUrl = function() {
-            setInterval(function() {self._getImage('BIM');}, 100)
+            setInterval(function() {self._getImage('BIM');}, 20)
         };
 
 
