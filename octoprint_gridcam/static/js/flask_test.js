@@ -53,9 +53,9 @@ $(function() {
             });
         };
 
-        self._generateGcode = function(callback) {
+        self._generateGcode = function(controls, callback) {
             $.ajax({
-                url: PLUGIN_BASEURL + "gridcam/gcode",
+                url: PLUGIN_BASEURL + "gridcam/gcode?controls=" + controls,
                 type: "GET",
                 dataType: "json",
                 contentType: "application/json; charset=UTF-8",
@@ -73,11 +73,10 @@ $(function() {
         };
 
         self.generateGcode = function() {
-            // msg = [self.settings.settings.plugins.gridcam.speed(),
-            //        self.settings.settings.plugins.gridcam.grids_num(),
-            //        self.settings.settings.plugins.gridcam.z_offset()].join(',');
-            // self._generateGcode(msg);
-            self._generateGcode();
+            msg = [self.settings.settings.plugins.gridcam.speed(),
+                   self.settings.settings.plugins.gridcam.grids_num(),
+                   self.settings.settings.plugins.gridcam.z_offset()].join(',');
+            self._generateGcode(msg);
         };
 
         self._clearImageFolder = function(callback) {

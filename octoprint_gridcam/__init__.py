@@ -172,27 +172,27 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
     def genGcode(self):
         self._logger.info("\n\n\nsaving gcode...\n\n\n")
         result = ""
-        # if "controls" in flask.request.values:
-        #     gcode_params = flask.request.values["controls"]
-        #     gcode_params = gcode_params.split(',')
-        #     if True:
-        #         try:
-        #             # self._logger.info(gcode_params)
-        #             filepath = "data/template_no_homing.gcode"
-        #             create_gcode_file(filepath, speed=int(gcode_params[0]), grids_num=int(gcode_params[1]),
-        #                               z_offset=float(gcode_params[2]), add_M114=True, delay=200)
-        #             result = flask.jsonify(
-        #                 src="done"
-        #             )
-        #         except IOError:
-        #             result = flask.jsonify(
-        #                 error="Unable to open Webcam stream"
-        #             )
-        #     # else:
-        #     #     result = flask.jsonify(
-        #     #         error="Unable to fetch image. Check octoprint log for details."
-        #     #     )
-        #     # self._printer.commands("M114")
+        if "controls" in flask.request.values:
+            gcode_params = flask.request.values["controls"]
+            gcode_params = gcode_params.split(',')
+            if True:
+                try:
+                    # self._logger.info(gcode_params)
+                    filepath = "data/template_no_homing.gcode"
+                    create_gcode_file(filepath, speed=int(gcode_params[0]), grids_num=int(gcode_params[1]),
+                                      z_offset=float(gcode_params[2]), add_M114=True, delay=200)
+                    result = flask.jsonify(
+                        src="done"
+                    )
+                except IOError:
+                    result = flask.jsonify(
+                        error="Unable to open Webcam stream"
+                    )
+            # else:
+            #     result = flask.jsonify(
+            #         error="Unable to fetch image. Check octoprint log for details."
+            #     )
+            # self._printer.commands("M114")
         return flask.make_response(result, 200)
 
     @octoprint.plugin.BlueprintPlugin.route("/clear_folder", methods=["GET"])
