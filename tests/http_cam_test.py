@@ -25,7 +25,8 @@ while True:
         jpg = bytes[a:b+2]
         bytes = bytes[b+2:]
         img = cv2.imdecode(np.fromstring(jpg, dtype=np.uint8), 1)
-        cv2.imshow('image', img)
-        if cv2.waitKey(1) == 27:
-            cv2.destroyAllWindows()
-            break
+        print(img.shape)
+        # cv2.imshow('image', img)
+        # if cv2.waitKey(1) == 27:
+        #     cv2.destroyAllWindows()
+        #     break
