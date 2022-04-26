@@ -117,6 +117,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         self._logger.info("GridCam \n(more: %s)" % self._settings.get(["url"]))
         #self.cam = cv.VideoCapture("/webcam/?action=stream")
         self.stream = urllib.request.urlopen("http://192.168.101.39/webcam/?action=stream")
+        self._logger.info("\n\n\nsaving gcode...\n\n\n")
 
     def get_settings_defaults(self):
      return dict(url=2, speed=1500, grids_num=10, z_offset=0.7)
