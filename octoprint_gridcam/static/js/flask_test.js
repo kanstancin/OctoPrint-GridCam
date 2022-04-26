@@ -53,9 +53,9 @@ $(function() {
             });
         };
 
-        self._generateGcode = function(controls, callback) {
+        self._generateGcode = function(callback) {
             $.ajax({
-                url: PLUGIN_BASEURL + "gridcam/gcode?controls=" + controls,
+                url: PLUGIN_BASEURL + "gridcam/gcode",
                 type: "GET",
                 dataType: "json",
                 contentType: "application/json; charset=UTF-8",
