@@ -11,6 +11,8 @@ import base64
 import cv2 as cv
 import os
 import shutil
+import urllib.request
+import numpy as np
 
 # from OctoPrint-GridCam.bin.gen_grid import create_gcode_file
 def get_flag_positions(filepath):
@@ -113,7 +115,8 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
 
     def on_after_startup(self):
         self._logger.info("GridCam \n(more: %s)" % self._settings.get(["url"]))
-        self.cam = cv.VideoCapture("/webcam/?action=stream")
+        #self.cam = cv.VideoCapture("/webcam/?action=stream")
+        self.stream = urllib.request.urlopen("http://192.168.101.39/webcam/?action=stream")
 
     def get_settings_defaults(self):
      return dict(url=2, speed=1500, grids_num=10, z_offset=0.7)
@@ -212,7 +215,20 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         return flask.make_response(result, 200)
 
     def get_img_stream(self):
-        ret, img = self.cam.read()
+        #ret, img = self.cam.read()
+        ret = "_"
+        bytes = b''
+        bytes += self.stream.read(1024)
+        a = bytes.find(b'\xff\xd8')  # frame starting
+        b = bytes.find(b'\xff\xd9')  # frame ending
+        if a != -1 and b != -1:
+            jpg = bytes[a:b + 2]
+            bytes = bytes[b + 2:]
+            img = cv.imdecode(np.fromstring(jpg, dtype=np.uint8), 1)
+            # cv.imshow('image', img)
+            # if cv.waitKey(1) == 27:
+            #     cv.destroyAllWindows()
+            #     break
         # self.cam.release()
         return ret, img
 
