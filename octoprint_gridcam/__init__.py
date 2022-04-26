@@ -232,6 +232,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
             jpg = self.bytes[a:b + 2]
             bytes = self.bytes[b + 2:]
             img = cv.imdecode(np.fromstring(jpg, dtype=np.uint8), 1)
+            img = cv.rotate(img, cv.ROTATE_180)
             ret = True
             # cv.imshow('image', img)
             # if cv.waitKey(1) == 27:
