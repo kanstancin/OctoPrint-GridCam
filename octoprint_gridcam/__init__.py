@@ -230,7 +230,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         b = self.bytes.find(b'\xff\xd9')  # frame ending
         if a != -1 and b != -1:
             jpg = self.bytes[a:b + 2]
-            bytes = self.bytes[b + 2:]
+            self.bytes = self.bytes[b + 2:]
             img = cv.imdecode(np.fromstring(jpg, dtype=np.uint8), 1)
             img = cv.rotate(img, cv.ROTATE_180)
             ret = True
