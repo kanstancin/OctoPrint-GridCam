@@ -30,7 +30,7 @@ def create_gcode_file(template_path, speed, grids_num=10, z_offset=0.7, add_M114
     gcode_out_path = "gcodes/"
     if not os.path.exists(gcode_out_path):
         os.makedirs(gcode_out_path)
-    gcode_filename = f"{gcode_out_path}/grid_F{speed}_GRIDS{grids_num}_Z{z_offset}.gcode"
+    gcode_filename = f"{gcode_out_path}/grid_F{speed}_GRIDS{grids_num}.gcode" #f"{gcode_out_path}/grid_F{speed}_GRIDS{grids_num}_Z{z_offset}.gcode"
     with open(gcode_filename, "w") as f:
         f.writelines(template[0])
         f.write("\n\n")  # main gcode
@@ -54,7 +54,7 @@ def get_grid_gcode(speed, grids_num, z_offset, add_M114, delay):
     step_x = (end_point[0] - start_point[0]) / grids_num
     step_y = (end_point[1] - start_point[1]) / grids_num
 
-    first_lines = [f"G1 X{start_point[0]} Y{start_point[1]} Z{z_offset} F1000 ; go to the starting position\n",
+    first_lines = [f"G1 X{start_point[0]} Y{start_point[1]} F1000 ; go to the starting position\n", #f"G1 X{start_point[0]} Y{start_point[1]} Z{z_offset} F1000 ; go to the starting position\n",
                    f"G1 F{speed}; change speed \n\n",
                    f"G4 P3000 ; wait"]
     lines = first_lines
@@ -109,7 +109,7 @@ def main(argv):
         elif opt in ("-z", "--zoffset"):
             z_offset = arg
 
-    filepath = "data/template.gcode"
+    filepath = "data/template_no_homing.gcode"
     create_gcode_file(filepath, speed=int(speed), grids_num=int(grids_num), z_offset=float(z_offset),
                       add_M114=True, delay=200)
 
