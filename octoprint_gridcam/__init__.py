@@ -223,6 +223,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
     def get_img_stream(self):
         #ret, img = self.cam.read()
         ret = False
+        img = None
         bytes = b''
         bytes += self.stream.read(1024)
         a = bytes.find(b'\xff\xd8')  # frame starting
