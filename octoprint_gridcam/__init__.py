@@ -169,6 +169,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
 
     @octoprint.plugin.BlueprintPlugin.route("/gcode", methods=["GET"])
     def genGcode(self):
+        self._logger.info("saving gcode...")
         result = ""
         if "controls" in flask.request.values:
             gcode_params = flask.request.values["controls"]
@@ -176,7 +177,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
             if True:
                 try:
                     # self._logger.info(gcode_params)
-                    filepath = "data/template.gcode"
+                    filepath = "data/template_no_homing.gcode"
                     create_gcode_file(filepath, speed=int(gcode_params[0]), grids_num=int(gcode_params[1]),
                                       z_offset=float(gcode_params[2]), add_M114=True, delay=200)
                     result = flask.jsonify(
