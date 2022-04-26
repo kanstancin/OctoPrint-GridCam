@@ -171,7 +171,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
     @octoprint.plugin.BlueprintPlugin.route("/gcode", methods=["GET"])
     def genGcode(self):
         self._logger.info("\n\n\nsaving gcode...\n\n\n")
-        # result = ""
+        result = ""
         # if "controls" in flask.request.values:
         #     gcode_params = flask.request.values["controls"]
         #     gcode_params = gcode_params.split(',')
