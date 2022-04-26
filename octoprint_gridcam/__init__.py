@@ -196,7 +196,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         return flask.make_response(result, 200)
 
     @octoprint.plugin.BlueprintPlugin.route("/clear_folder", methods=["GET"])
-    def genGcode(self):
+    def clearFolder(self):
         self._logger.info("\n\n\n.saving gcode...\n\n\n")
         result = ""
         if True:
