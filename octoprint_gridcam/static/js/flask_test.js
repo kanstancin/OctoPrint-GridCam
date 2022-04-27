@@ -106,6 +106,9 @@ $(function() {
             setInterval(function() {self._getImage('BIM');}, 20)
         };
 
+        self.homePrintHead = function() {
+            OctoPrint.control.sendGcode("G0 X355 Y355");
+        };
 
     }
 
