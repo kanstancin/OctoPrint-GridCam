@@ -187,8 +187,9 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
                     filepath = "data/template_no_homing.gcode"
                     create_gcode_file(filepath, speed=int(gcode_params[0]), grids_num=int(gcode_params[1]),
                                       z_offset=float(gcode_params[2]), add_M114=True, delay=200)
+                    gcode_filename = f"gcodes/grid_F{gcode_params[0]}_GRIDS{gcode_params[1]}_Z{gcode_params[2]}.gcode"
                     result = flask.jsonify(
-                        src="done"
+                        src=gcode_filename
                     )
                 except IOError:
                     result = flask.jsonify(
