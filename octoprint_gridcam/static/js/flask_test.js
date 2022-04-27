@@ -61,9 +61,9 @@ $(function() {
                 contentType: "application/json; charset=UTF-8",
                 //data: JSON.stringify(data),
                 success: function(response) {
-                    // if(response.hasOwnProperty("src")) {
-                    //     self._drawImage(response.src);
-                    // }
+                    if(response.hasOwnProperty("src")) {
+                        alert(`Please, upload the following gcode file:\n ${response.src}`);
+                    }
                     // if(response.hasOwnProperty("error")) {
                     //     alert(response.error);
                     // }
@@ -77,6 +77,7 @@ $(function() {
                    self.settings.settings.plugins.gridcam.grids_num(),
                    self.settings.settings.plugins.gridcam.z_offset()].join(',');
             self._generateGcode(msg);
+            //alert(`Gcode file can be found:\n gcodes/${}`);
         };
 
         self._clearImageFolder = function(callback) {
@@ -100,12 +101,17 @@ $(function() {
 
         self.clearImageFolder = function() {
             self._clearImageFolder();
+            alert("Image folder has been cleared.");
         };
 
         self.goToUrl = function() {
             setInterval(function() {self._getImage('BIM');}, 20)
         };
 
+        self.homePrintHead = function() {
+            OctoPrint.control.sendGcode("G0 X355 Y355 F2000");
+            alert("Homing command has been sent.");
+        };
 
     }
 
