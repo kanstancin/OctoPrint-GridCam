@@ -213,6 +213,9 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
                 if os.path.exists(dir):
                     shutil.rmtree(dir)
                 os.makedirs(dir)
+                result = flask.jsonify(
+                    src=""
+                )
             except IOError:
                 result = flask.jsonify(
                     error="Unable to open Webcam stream"
