@@ -224,27 +224,6 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         # self._printer.commands("M114")
         return flask.make_response(result, 200)
 
-    @octoprint.plugin.BlueprintPlugin.route("/home_printhead", methods=["GET"])
-    def clearFolder(self):
-        self._logger.info("\n\n\nhoming...\n\n\n")
-        result = ""
-        if True:
-            try:
-                dir = 'images/'
-                if os.path.exists(dir):
-                    shutil.rmtree(dir)
-                os.makedirs(dir)
-            except IOError:
-                result = flask.jsonify(
-                    error="Unable to open Webcam stream"
-                )
-        # else:
-        #     result = flask.jsonify(
-        #         error="Unable to fetch image. Check octoprint log for details."
-        #     )
-        # self._printer.commands("M114")
-        return flask.make_response(result, 200)
-
     def get_img_stream(self):
         ret = False
         img = None
