@@ -88,9 +88,9 @@ $(function() {
                 contentType: "application/json; charset=UTF-8",
                 //data: JSON.stringify(data),
                 success: function(response) {
-                    // if(response.hasOwnProperty("src")) {
-                    //     self._drawImage(response.src);
-                    // }
+                    if(response.hasOwnProperty("src")) {
+                        alert("Image folder has been cleared.");
+                    }
                     // if(response.hasOwnProperty("error")) {
                     //     alert(response.error);
                     // }
@@ -101,7 +101,6 @@ $(function() {
 
         self.clearImageFolder = function() {
             self._clearImageFolder();
-            alert("Image folder has been cleared.");
         };
 
         self.goToUrl = function() {
