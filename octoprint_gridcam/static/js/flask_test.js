@@ -112,6 +112,47 @@ $(function() {
             alert("Homing command has been sent.");
         };
 
+        self.processGcode = function() {
+            // OctoPrint.control.sendGcode("G0 X355 Y355 F2000");
+            const gcode_filename = document.getElementById("gcodefile").files[0]
+            let text = gcode_filename.text();
+            //  const formData = new FormData(form);
+            // var oOutput = document.getElementById("static_file_response")
+            // alert(`${gcode_filename.name}`);
+            msg = [self.settings.settings.plugins.gridcam.gcode_corner_step(), gcode_filename.name, 0].join(',');
+            var fileReader = new FileReader();
+            fileReader.onload = function(fileLoadedEvent){
+              var textFromFileLoaded = fileLoadedEvent.target.result;
+              // alert(`${typeof textFromFileLoaded}`);
+              self._processGcode2(textFromFileLoaded, msg);
+            };
+
+            fileReader.readAsText(gcode_filename, "UTF-8");
+
+        };
+
+        self._processGcode = function(text1, controls, callback) {
+            $.post( PLUGIN_BASEURL + "gridcam/upload_static_file?controls=" + controls, { token: text1 },
+                );
+        };
+        self._processGcode2 = function(text1, controls, callback) {
+            $.ajax({
+                url: PLUGIN_BASEURL + "gridcam/upload_static_file?controls=" + controls,
+                type: "POST",
+                dataType: "json",
+                contentType: "application/json; charset=UTF-8",
+                data: JSON.stringify({text: text1}),
+                success: function(response) {
+                    if(response.hasOwnProperty("src")) {
+                        alert("Successfully saved gcode in 'gcodes' folder");
+                    }
+                    // if(response.hasOwnProperty("error")) {
+                    //     alert(response.error);
+                    // }
+                    if (callback) callback();
+                }
+            });
+        };
     }
 
     // This is how our plugin registers itself with the application, by adding some configuration

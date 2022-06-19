@@ -123,7 +123,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         self._logger.info("\n\n\nsaving gcode...\n\n\n")
 
     def get_settings_defaults(self):
-     return dict(url=2, speed=1500, grids_num=10, z_offset=0.7)
+     return dict(url=2, speed=1500, grids_num=10, z_offset=0.7, gcode_corner_step=100)
 
     def get_template_configs(self):
      return [
@@ -201,6 +201,49 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
             #     )
             # self._printer.commands("M114")
         return flask.make_response(result, 200)
+
+    @octoprint.plugin.BlueprintPlugin.route("/upload_static_file", methods=["GET", "POST"])
+    def process_gcode_file(self):
+        # get controls
+        gcode_params = flask.request.values["controls"]
+        gcode_params = gcode_params.split(',')
+        step, filename, *_ = gcode_params
+
+        # process file
+        # data = flask.request.values["data"]
+        data = flask.request.get_json()["text"]
+        data = data.splitlines()
+        self._logger.info(f"\n\n\n.processing gcode... {data[:20]}+ \n\n\n")
+        data_out = self.addCornerCommandsGcode(data, int(step), offset_g28=100)
+
+        # save file
+        filename = os.path.splitext(filename)[0]
+        filename_out = f"gcodes/{filename}_step{step}.gcode"
+        with open(filename_out, 'w') as f:
+            f.write('\n'.join(data_out))
+
+        result = flask.jsonify(
+            src=""
+        )
+        return result
+
+    def addCornerCommandsGcode(self, txt, step, offset_g28=100):
+        # txt.splitlines()
+        # find G28 position
+        g28_line_i = 200
+        for line_i in range(len(txt[:1000][::-1])):
+            if txt[line_i][:3] == 'G28':
+                g28_line_i = line_i
+                break
+        line_i = g28_line_i + offset_g28
+        while (line_i < len(txt)):
+            cmd = ["", "G1 X340.0 Y340.0; Y shift; go to corner",
+                   "G4 P500",
+                   "M114_REALTIME R",
+                   "G4 P500", ""]
+            txt[line_i:line_i] = cmd
+            line_i += step + len(cmd)
+        return txt
 
     @octoprint.plugin.BlueprintPlugin.route("/clear_folder", methods=["GET"])
     def clearFolder(self):

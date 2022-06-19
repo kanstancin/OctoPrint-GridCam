@@ -63,6 +63,49 @@
 
 {#<iframe data-bind="attr: {src: currentUrl}"></iframe>#}
 
+<h1>Upload gcode</h1>
+
+
+
+<div style="width: 100%; display: table;">
+   <div style="display: table-row">
+        <div style="{#  width: 100px; #}
+                display: table-cell;">
+                Detection frequency:
+        </div>
+        <div style="display: table-cell;">Select a file:</div>
+    </div>
+    <div style="display: table-row">
+        <div style="{#  width: 100px; #} display: table-cell;">
+            <div class="input-append control-box">
+            <input type="number" class="input-mini" min="50" step="10" data-bind="textInput: settings.settings.plugins.gridcam.gcode_corner_step">
+            <span class="add-on">lines</span>
+                </div>
+        </div>
+        <div style="display: table-cell;">
+{#            <label for="myfile">Select a file:</label>#}
+            <input type="file" id="gcodefile" name="myfile"><br><br>
+            {#<input type="submit" data-bind="click: processGcode]">#}
+            <button class="submit" data-bind="click: processGcode">{{ _('Process Gcode') }}</button>
+        </div>
+    </div>
+</div>
+{#<pre id="output"></pre>#}
+{#<script type="text/javascript">#}
+{#    document.getElementById('gcodefile')#}
+{#        .addEventListener('change', function() {#}
+{##}
+{#        var fr=new FileReader();#}
+{#        fr.onload=function(){#}
+{#            document.getElementById('output')#}
+{#                    .textContent=fr.result;#}
+{#        }#}
+{##}
+{#        fr.readAsText(this.files[0]);#}
+{#    })#}
+{#</script>#}
+
+
 <h1></h1>
 <canvas id="headCanvas" width="585" height="410"></canvas>
 
