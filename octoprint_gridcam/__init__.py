@@ -13,8 +13,10 @@ import os
 import shutil
 import urllib.request
 import numpy as np
+from time import sleep
 
-# from OctoPrint-GridCam.bin.gen_grid import create_gcode_file
+from img_diff_c9_integration import get_det_res
+
 def get_flag_positions(filepath):
     flag_seq = ";;;!!"
     flag_line_num = []
@@ -115,11 +117,18 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         self.stream = ''
         self.bytes = b''
         self.img = False
+        self.im_counter = 0
+        self.prev_im_counter = -1
+        self.buffer_size = 0
+        self.img_buffer = np.zeros((3, 10, 720, 1280, 3)).astype(np.uint8)
+        self.im_det = np.zeros((720, 1280, 3)).astype(np.uint8)
+        self.found_cntr = False
 
     def on_after_startup(self):
         self._logger.info("GridCam \n(more: %s)" % self._settings.get(["url"]))
-        #self.cam = cv.VideoCapture("/webcam/?action=stream")
-        self.stream = urllib.request.urlopen("http://192.168.101.39/webcam/?action=stream")
+        self.cam = cv.VideoCapture(0)
+        # self.stream = urllib.request.urlopen("http://192.168.101.39/webcam/?action=stream")
+        self.stream = urllib.request.urlopen("https://localhost:8888/videostream.cgi")
         self._logger.info("\n\n\nsaving gcode...\n\n\n")
 
     def get_settings_defaults(self):
@@ -141,8 +150,10 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
     def getCameraImage(self):
         result = ""
         # self._logger.info("Hello World! \n\n\n\n\n(more: )")
-        ret, img = self.get_img_stream()
+        # ret, img = self.get_img_stream()
+        ret, img = self.cam.read()
         self.img = img
+        self.im_counter += 1
         # while (ret == False):
         #     ret, img = self.get_img_stream()
         shape = img.shape[:2]
@@ -162,6 +173,39 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
                             src="data:image/{0};base64,{1}".format(
                                 ".jpg",
                                 str(base64.b64encode(buffer), "utf-8"))
+                        )
+                    except IOError:
+                        result = flask.jsonify(
+                            error="Unable to open Webcam stream"
+                        )
+                else:
+                    result = flask.jsonify(
+                        error="Unable to fetch image. Check octoprint log for details."
+                    )
+            # self._printer.commands("M114")
+        return flask.make_response(result, 200)
+
+    @octoprint.plugin.BlueprintPlugin.route("/echo2", methods=["GET"])
+    def sendProcessedImage(self):
+        result = ""
+        shape = self.im_det.shape[:2]
+        res = 360
+        dim = (int(res * shape[1] / shape[0]), res)
+        img = cv.resize(self.im_det, dim, interpolation=cv.INTER_AREA)
+
+        retval, buffer = cv.imencode('.jpg', img)
+
+        if "imagetype" in flask.request.values:
+            camera = flask.request.values["imagetype"]
+            if camera in ("HEAD", "BIM"):
+                if True:
+                    # self._settings.get(["camera", camera.lower(), "path"])
+                    try:
+                        result = flask.jsonify(
+                            src="data:image/{0};base64,{1}".format(
+                                ".jpg",
+                                str(base64.b64encode(buffer), "utf-8")),
+                            det_res=self.found_cntr
                         )
                     except IOError:
                         result = flask.jsonify(
@@ -204,27 +248,33 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
 
     @octoprint.plugin.BlueprintPlugin.route("/upload_static_file", methods=["GET", "POST"])
     def process_gcode_file(self):
-        # get controls
-        gcode_params = flask.request.values["controls"]
-        gcode_params = gcode_params.split(',')
-        step, filename, *_ = gcode_params
+        try:
+            # get controls
+            gcode_params = flask.request.values["controls"]
+            gcode_params = gcode_params.split(',')
+            step, filename, *_ = gcode_params
 
-        # process file
-        # data = flask.request.values["data"]
-        data = flask.request.get_json()["text"]
-        data = data.splitlines()
-        self._logger.info(f"\n\n\n.processing gcode... {data[:20]}+ \n\n\n")
-        data_out = self.addCornerCommandsGcode(data, int(step), offset_g28=100)
+            # process file
+            # data = flask.request.values["data"]
+            data = flask.request.get_json()["text"]
+            data = data.splitlines()
+            self._logger.info(f"\n\n\nprocessing gcode:\n {data[:20]}... \n\n\n")
+            data_out = self.addCornerCommandsGcode(data, int(step), offset_g28=100)
 
-        # save file
-        filename = os.path.splitext(filename)[0]
-        filename_out = f"gcodes/{filename}_step{step}.gcode"
-        with open(filename_out, 'w') as f:
-            f.write('\n'.join(data_out))
+            # save file
+            filename = os.path.splitext(filename)[0]
+            filename_out = f"gcodes/{filename}_step{step}.gcode"
+            with open(filename_out, 'w') as f:
+                f.write('\n'.join(data_out))
+            self._logger.info(f"saved gcode as '{filename_out}'")
+            result = flask.jsonify(
+                src=f"{filename_out}"
+            )
+        except Exception as e:
+            result = flask.jsonify(
+                error=f"{e}"
+            )
 
-        result = flask.jsonify(
-            src=""
-        )
         return result
 
     def addCornerCommandsGcode(self, txt, step, offset_g28=100):
@@ -283,7 +333,8 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
                 img = cv.imdecode(np.fromstring(jpg, dtype=np.uint8), 1)
                 img = cv.rotate(img, cv.ROTATE_180)
                 ret = True
-                self.stream = urllib.request.urlopen("http://192.168.101.39/webcam/?action=stream")
+                # self.stream = urllib.request.urlopen("http://192.168.101.39/webcam/?action=stream")
+                self.stream = urllib.request.urlopen("https://localhost:8888/videostream.cgi")
                 self.bytes = b''
         return ret, img
 
@@ -291,6 +342,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
 
         pattern = "X:([-+]?[0-9.]+) Y:([-+]?[0-9.]+) Z:([-+]?[0-9.]+) E:([-+]?[0-9.]+)"
         result = re.findall(pattern, line)
+
         if len(result) == 1:
             img = self.img #self.get_img_stream()
             im_name = f"images/img_X{result[0][0]}_Y{result[0][1]}_Z{result[0][2]}.jpg"
@@ -302,10 +354,47 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         return line
 
 
+    def process_imgs(self, comm, line, *args, **kwargs):
+        # take N images append them to M size array of imgs, make a call to im_diff processing func, send res to JS
+        pattern = "X:([-+]?[0-9.]+) Y:([-+]?[0-9.]+) Z:([-+]?[0-9.]+) E:([-+]?[0-9.]+)"
+        result = re.findall(pattern, line)
+
+        if len(result) == 1:
+            # rotate buffer
+            buff_len = self.img_buffer.shape[0]
+            if self.buffer_size == buff_len:
+                self.img_buffer[:buff_len-1] = self.img_buffer[1:]
+            # update queue
+            for i in range(self.img_buffer.shape[1]):
+                # wait for new image
+                while self.prev_im_counter == self.im_counter:
+                    sleep(0.01)
+                curr_im_buff_i = self.buffer_size - 1
+                if self.buffer_size < buff_len:
+                    curr_im_buff_i = self.buffer_size
+                self.img_buffer[curr_im_buff_i, i, :, :, :] = self.img
+                self._logger.info(f"added image: {self.im_counter} to the buffer")
+                self.prev_im_counter = self.im_counter
+
+            if self.buffer_size >= 1 and self.buffer_size != buff_len:
+                self.im_det, self.found_cntr = get_det_res(self.img_buffer[self.buffer_size-1:self.buffer_size+1],
+                                                           show=False)
+            elif self.buffer_size == buff_len:
+                self.im_det, self.found_cntr = get_det_res(self.img_buffer[-2:], show=False)
+            # update buffer size
+            if self.buffer_size < buff_len:
+                self.buffer_size += 1
+            # send two last imgs for processing
+
+            # get im_res and state
+
+        return line
+
+
 __plugin_name__ = "GridCam"
 __plugin_pythoncompat__ = ">=2.7,<4"
 __plugin_implementation__ = GridCamPlugin()
 __plugin_hooks__ = {
-    "octoprint.comm.protocol.gcode.received": __plugin_implementation__.parse_gcode_imsave
+    "octoprint.comm.protocol.gcode.received": __plugin_implementation__.process_imgs
 }
 

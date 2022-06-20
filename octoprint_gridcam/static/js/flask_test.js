@@ -14,10 +14,21 @@ $(function() {
         self.zOffset = ko.observable();
 
         self._headCanvas = document.getElementById('headCanvas');
+        self._headCanvas_proc = document.getElementById('headCanvas_proc');
+        // detection status
+        self.det_status = false;
+        res = ""
+        if (self.det_status) {
+            res = "print failure detected"
+        }
+        else {
+            res = "no print failures detected"
+        }
+        document.getElementById("det_status").innerHTML = `${res}`;
         // this will be called when the user clicks the "Go" button and set the iframe's URL to
         // the entered URL
-        self._drawImage = function(img, break_cache = false) {
-            var ctx=self._headCanvas.getContext("2d");
+        self._drawImage = function(img, canv, break_cache = false) {
+            var ctx = canv.getContext("2d");
             var localimg = new Image();
             localimg.onload = function () {
                 var w = localimg.width;
@@ -34,6 +45,8 @@ $(function() {
             localimg.src = img;
         };
 
+
+
         self._getImage = function(imagetype, callback) {
             $.ajax({
                 url: PLUGIN_BASEURL + "gridcam/echo?imagetype=" + imagetype,
@@ -43,8 +56,37 @@ $(function() {
                 //data: JSON.stringify(data),
                 success: function(response) {
                     if(response.hasOwnProperty("src")) {
-                        self._drawImage(response.src);
+                        self._drawImage(response.src, self._headCanvas);
                     }
+                    if(response.hasOwnProperty("error")) {
+                        alert(response.error);
+                    }
+                    if (callback) callback();
+                }
+            });
+        };
+
+        self._getImage2 = function(imagetype, callback) {
+            $.ajax({
+                url: PLUGIN_BASEURL + "gridcam/echo2?imagetype=" + imagetype,
+                type: "GET",
+                dataType: "json",
+                contentType: "application/json; charset=UTF-8",
+                //data: JSON.stringify(data),
+                success: function(response) {
+                    if(response.hasOwnProperty("src")) {
+                        self._drawImage(response.src, self._headCanvas_proc);
+                    }
+                    // det_res property
+                    self.det_status = response.det_res;
+                    res = "";
+                    if (self.det_status) {
+                        res = "print failure detected"
+                    }
+                    else {
+                        res = "no print failures detected"
+                    }
+                    document.getElementById("det_status").innerHTML = `${res}`;
                     if(response.hasOwnProperty("error")) {
                         alert(response.error);
                     }
@@ -105,6 +147,7 @@ $(function() {
 
         self.goToUrl = function() {
             setInterval(function() {self._getImage('BIM');}, 20)
+            setInterval(function() {self._getImage2('BIM');}, 300)
         };
 
         self.homePrintHead = function() {
@@ -144,11 +187,11 @@ $(function() {
                 data: JSON.stringify({text: text1}),
                 success: function(response) {
                     if(response.hasOwnProperty("src")) {
-                        alert("Successfully saved gcode in 'gcodes' folder");
+                        alert(`Successfully saved gcode in '${response.src}'`);
                     }
-                    // if(response.hasOwnProperty("error")) {
-                    //     alert(response.error);
-                    // }
+                    if(response.hasOwnProperty("error")) {
+                        alert(`Got the following error in the endpoint:\n "${response.error}"`);
+                    }
                     if (callback) callback();
                 }
             });
