@@ -150,8 +150,6 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
 
     @octoprint.plugin.BlueprintPlugin.route("/echo", methods=["GET"])
     def getCameraImage(self):
-        dir_path = os.path.dirname(os.path.realpath(__file__))
-        self._logger.info(dir_path)
         result = ""
         # self._logger.info("Hello World! \n\n\n\n\n(more: )")
         ret, img = self.get_img_stream()
