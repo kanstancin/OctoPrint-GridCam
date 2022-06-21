@@ -15,7 +15,10 @@ import urllib.request
 import numpy as np
 from time import sleep
 
-from img_diff_c9_integration import get_det_res
+from img_diff_c9_integration import get_det_res, avg_imgs
+
+# logging
+from datetime import datetime
 
 def get_flag_positions(filepath):
     flag_seq = ";;;!!"
@@ -126,9 +129,8 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
 
     def on_after_startup(self):
         self._logger.info("GridCam \n(more: %s)" % self._settings.get(["url"]))
-        self.cam = cv.VideoCapture(0)
-        # self.stream = urllib.request.urlopen("http://192.168.101.39/webcam/?action=stream")
-        self.stream = urllib.request.urlopen("https://localhost:8888/videostream.cgi")
+        # self.cam = cv.VideoCapture(0)
+        self.stream = urllib.request.urlopen("http://192.168.101.39/webcam/?action=stream")
         self._logger.info("\n\n\nsaving gcode...\n\n\n")
 
     def get_settings_defaults(self):
@@ -150,8 +152,8 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
     def getCameraImage(self):
         result = ""
         # self._logger.info("Hello World! \n\n\n\n\n(more: )")
-        # ret, img = self.get_img_stream()
-        ret, img = self.cam.read()
+        ret, img = self.get_img_stream()
+        # ret, img = self.cam.read()
         self.img = img
         self.im_counter += 1
         # while (ret == False):
@@ -333,8 +335,8 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
                 img = cv.imdecode(np.fromstring(jpg, dtype=np.uint8), 1)
                 img = cv.rotate(img, cv.ROTATE_180)
                 ret = True
-                # self.stream = urllib.request.urlopen("http://192.168.101.39/webcam/?action=stream")
-                self.stream = urllib.request.urlopen("https://localhost:8888/videostream.cgi")
+                self.stream = urllib.request.urlopen("http://192.168.101.39/webcam/?action=stream")
+                # self.stream = urllib.request.urlopen("https://localhost:8888/videostream.cgi")
                 self.bytes = b''
         return ret, img
 
@@ -344,7 +346,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         result = re.findall(pattern, line)
 
         if len(result) == 1:
-            img = self.img #self.get_img_stream()
+            img = self.img   # self.get_img_stream()
             im_name = f"images/img_X{result[0][0]}_Y{result[0][1]}_Z{result[0][2]}.jpg"
             cv.imwrite(im_name, img)
             # self._logger.info(line)
@@ -375,12 +377,15 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
                 self.img_buffer[curr_im_buff_i, i, :, :, :] = self.img
                 self._logger.info(f"added image: {self.im_counter} to the buffer")
                 self.prev_im_counter = self.im_counter
-
+            imgs = None
             if self.buffer_size >= 1 and self.buffer_size != buff_len:
-                self.im_det, self.found_cntr = get_det_res(self.img_buffer[self.buffer_size-1:self.buffer_size+1],
-                                                           show=False)
+                imgs = self.img_buffer[self.buffer_size-1:self.buffer_size+1]
             elif self.buffer_size == buff_len:
-                self.im_det, self.found_cntr = get_det_res(self.img_buffer[-2:], show=False)
+                imgs = self.img_buffer[-2:]
+            if imgs is not None:
+                self.im_det, self.found_cntr = get_det_res(imgs, show=False)
+                # save imgs
+                self.log_imgs(imgs, self.found_cntr)
             # update buffer size
             if self.buffer_size < buff_len:
                 self.buffer_size += 1
@@ -389,6 +394,21 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
             # get im_res and state
 
         return line
+
+    def log_imgs(self, buff, det_res):
+        # save imgs
+        im1 = avg_imgs(buff[-2, 0:5])
+        im2 = avg_imgs(buff[-2, 5:])
+        filename_img1 = os.path.join('logs', f"img_{self.prev_im_counter}_{self.get_timestamp()}_{str(int(det_res))}_1.jpg")
+        filename_img2 = os.path.join('logs', f"img_{self.prev_im_counter}_{self.get_timestamp()}_{str(int(det_res))}_2.jpg")
+        # np.save(filename_imgs, imgs[-1])
+        cv.imwrite(filename_img1, im1)
+        cv.imwrite(filename_img2, im2)
+
+    def get_timestamp(self):
+        time_ = datetime.now()
+        return time_.strftime("%d-%m-%H:%M")
+
 
 
 __plugin_name__ = "GridCam"

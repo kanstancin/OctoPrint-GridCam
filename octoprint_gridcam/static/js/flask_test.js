@@ -146,7 +146,7 @@ $(function() {
         };
 
         self.goToUrl = function() {
-            setInterval(function() {self._getImage('BIM');}, 20)
+            setInterval(function() {self._getImage('BIM');}, 41)
             setInterval(function() {self._getImage2('BIM');}, 300)
         };
 
