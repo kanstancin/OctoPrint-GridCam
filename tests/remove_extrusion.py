@@ -34,7 +34,7 @@ def addCornerCommandsGcode(txt, step, offset_g28=100):
         cmd = ["", "G1 X340.0 Y340.0; Y shift; go to corner",
                "G4 P5000",
                "M114_REALTIME R",
-               "G4 P5000", ""]
+               "G4 P15000", ""]
         txt[line_i:line_i] = cmd
         line_i += step + len(cmd)
     return txt

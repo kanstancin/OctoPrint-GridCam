@@ -363,6 +363,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         result = re.findall(pattern, line)
 
         if len(result) == 1:
+            self._logger.info(f"detected M114, entered hook function")
             # rotate buffer
             buff_len = self.img_buffer.shape[0]
             if self.buffer_size == buff_len:
