@@ -252,6 +252,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
     def process_gcode_file(self):
         try:
             # get controls
+            self._logger.info(f"\n\n\nprocessing gcode: ... \n\n\n")
             gcode_params = flask.request.values["controls"]
             gcode_params = gcode_params.split(',')
             step, filename, *_ = gcode_params

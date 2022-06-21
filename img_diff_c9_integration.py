@@ -241,7 +241,7 @@ def get_det_res(buffer, show=False):
     maskAOI = getAOIMask(img_shape=im_avg1.shape, poly_pts=pts)
     im_diff = getImDiff(im_avg1, im_avg2, maskAOI=maskAOI, method="saturation")
     # find ellipse
-    c, r = gauss_mixture.get_ellipse_no_frg(im_diff.reshape(-1, 3)[::50].astype(np.int16), show=False)
+    c, r = gauss_mixture.get_ellipse_no_frg(im_diff.reshape(-1, 3)[::200].astype(np.int16), show=False)
     print("Found ellipse: ", c, r)
     # classify and get result
     im_avg1 = avg_imgs(buffer[0, :5])
