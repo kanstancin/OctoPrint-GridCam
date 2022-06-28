@@ -14,6 +14,7 @@ import shutil
 import urllib.request
 import numpy as np
 from time import sleep
+from time import time
 
 from img_diff_c9_integration import get_det_res, avg_imgs
 
@@ -358,6 +359,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
 
 
     def process_imgs(self, comm, line, *args, **kwargs):
+        st = time()
         # take N images append them to M size array of imgs, make a call to im_diff processing func, send res to JS
         pattern = "X:([-+]?[0-9.]+) Y:([-+]?[0-9.]+) Z:([-+]?[0-9.]+) E:([-+]?[0-9.]+)"
         result = re.findall(pattern, line)
@@ -395,6 +397,8 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
 
             # get im_res and state
             self._logger.info(f"finished processing, sent a resulting image")
+            en = time()
+            self._logger.info(f"'process_imgs' execution time: {st - en}s")
         return line
 
     def log_imgs(self, buff, det_res):
