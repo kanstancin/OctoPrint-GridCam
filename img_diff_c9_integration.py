@@ -186,7 +186,7 @@ def plt_show_img(im, title="", cmap=None, to_rgb=False):
 
 
 def avg_imgs(arr):
-    img_avg = np.zeros((720, 1280, 3)).astype(np.uint64)
+    img_avg = np.zeros((360, 480, 3)).astype(np.uint64)
     for i1 in range(arr.shape[0]):
         im1 = arr[i1]
         img_avg += im1
