@@ -359,46 +359,49 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
 
 
     def process_imgs(self, comm, line, *args, **kwargs):
-        st = time()
-        # take N images append them to M size array of imgs, make a call to im_diff processing func, send res to JS
-        pattern = "X:([-+]?[0-9.]+) Y:([-+]?[0-9.]+) Z:([-+]?[0-9.]+) E:([-+]?[0-9.]+)"
-        result = re.findall(pattern, line)
+        try:
+            st = time()
+            # take N images append them to M size array of imgs, make a call to im_diff processing func, send res to JS
+            pattern = "X:([-+]?[0-9.]+) Y:([-+]?[0-9.]+) Z:([-+]?[0-9.]+) E:([-+]?[0-9.]+)"
+            result = re.findall(pattern, line)
 
-        if len(result) == 1:
-            self._logger.info(f"detected M114, entered hook function")
-            # rotate buffer
-            buff_len = self.img_buffer.shape[0]
-            if self.buffer_size == buff_len:
-                self.img_buffer[:buff_len-1] = self.img_buffer[1:]
-            # update queue
-            for i in range(self.img_buffer.shape[1]):
-                # wait for new image
-                while self.prev_im_counter == self.im_counter:
-                    sleep(0.01)
-                curr_im_buff_i = self.buffer_size - 1
+            if len(result) == 1:
+                self._logger.info(f"detected M114, entered hook function")
+                # rotate buffer
+                buff_len = self.img_buffer.shape[0]
+                if self.buffer_size == buff_len:
+                    self.img_buffer[:buff_len-1] = self.img_buffer[1:]
+                # update queue
+                for i in range(self.img_buffer.shape[1]):
+                    # wait for new image
+                    while self.prev_im_counter == self.im_counter:
+                        sleep(0.01)
+                    curr_im_buff_i = self.buffer_size - 1
+                    if self.buffer_size < buff_len:
+                        curr_im_buff_i = self.buffer_size
+                    self.img_buffer[curr_im_buff_i, i, :, :, :] = self.img
+                    self._logger.info(f"added image: {self.im_counter} to the buffer")
+                    self.prev_im_counter = self.im_counter
+                imgs = None
+                if self.buffer_size >= 1 and self.buffer_size != buff_len:
+                    imgs = self.img_buffer[self.buffer_size-1:self.buffer_size+1]
+                elif self.buffer_size == buff_len:
+                    imgs = self.img_buffer[-2:]
+                if imgs is not None:
+                    self.im_det, self.found_cntr = get_det_res(imgs, show=False)
+                    # save imgs
+                    # self.log_imgs(imgs, self.found_cntr)
+                # update buffer size
                 if self.buffer_size < buff_len:
-                    curr_im_buff_i = self.buffer_size
-                self.img_buffer[curr_im_buff_i, i, :, :, :] = self.img
-                self._logger.info(f"added image: {self.im_counter} to the buffer")
-                self.prev_im_counter = self.im_counter
-            imgs = None
-            if self.buffer_size >= 1 and self.buffer_size != buff_len:
-                imgs = self.img_buffer[self.buffer_size-1:self.buffer_size+1]
-            elif self.buffer_size == buff_len:
-                imgs = self.img_buffer[-2:]
-            if imgs is not None:
-                self.im_det, self.found_cntr = get_det_res(imgs, show=False)
-                # save imgs
-                # self.log_imgs(imgs, self.found_cntr)
-            # update buffer size
-            if self.buffer_size < buff_len:
-                self.buffer_size += 1
-            # send two last imgs for processing
+                    self.buffer_size += 1
+                # send two last imgs for processing
 
-            # get im_res and state
-            self._logger.info(f"finished processing, sent a resulting image")
-            en = time()
-            self._logger.info(f"'process_imgs' execution time: {st - en}s")
+                # get im_res and state
+                self._logger.info(f"finished processing, sent a resulting image")
+                en = time()
+                self._logger.info(f"'process_imgs' execution time: {en - st}s")
+        except Exception as e:
+            self._logger.info(f"error \t\n{e}")
         return line
 
     def log_imgs(self, buff, det_res):
