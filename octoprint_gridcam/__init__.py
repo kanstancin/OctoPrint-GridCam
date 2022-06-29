@@ -124,8 +124,8 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         self.im_counter = 0
         self.prev_im_counter = -1
         self.buffer_size = 0
-        self.img_buffer = np.zeros((3, 10, 720, 1280, 3)).astype(np.uint8)
-        self.im_det = np.zeros((720, 1280, 3)).astype(np.uint8)
+        self.img_buffer = np.zeros((3, 10, 360, 480, 3)).astype(np.uint8)
+        self.im_det = np.zeros((360, 480, 3)).astype(np.uint8)
         self.found_cntr = False
 
     def on_after_startup(self):
