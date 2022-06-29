@@ -363,8 +363,10 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         try:
             st = time()
             # take N images append them to M size array of imgs, make a call to im_diff processing func, send res to JS
-            pattern = "X:([-+]?[0-9.]+) Y:([-+]?[0-9.]+) Z:([-+]?[0-9.]+) E:([-+]?[0-9.]+)"
-            result = re.findall(pattern, line)
+            # pattern = "X:([-+]?[0-9.]+) Y:([-+]?[0-9.]+) Z:([-+]?[0-9.]+) E:([-+]?[0-9.]+)"
+            # result = re.findall(pattern, line)
+            pattern = "X:340.00 Y:340.00 Z:"
+            result = line[:len(pattern)] == pattern
 
             if len(result) == 1:
                 self._logger.info(f"detected M114, entered hook function: \n\t{line}")
