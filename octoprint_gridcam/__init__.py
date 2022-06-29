@@ -368,7 +368,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
             pattern = "X:340.00 Y:340.00 Z:"
             result = line[:len(pattern)] == pattern
 
-            if len(result) == 1:
+            if result == True:
                 self._logger.info(f"detected M114, entered hook function: \n\t{line}")
                 # rotate buffer
                 buff_len = self.img_buffer.shape[0]
