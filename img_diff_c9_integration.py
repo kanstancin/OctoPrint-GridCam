@@ -238,6 +238,8 @@ def get_det_res(buffer, show=False):
     pts_Z70 = np.array([[0, 443], [298, 720], [1000, 720], [1085, 205], [574, 102]])
     pts = pts_Z10
     pts = pts.reshape((-1, 1, 2))
+    pts[:, 0, 0] = pts[:, 0, 0] / 1280.0 * 480
+    pts[:, 0, 1] = pts[:, 0, 1] / 720.0 * 360
     maskAOI = getAOIMask(img_shape=im_avg1.shape, poly_pts=pts)
     im_diff = getImDiff(im_avg1, im_avg2, maskAOI=maskAOI, method="saturation")
     # find ellipse
@@ -255,8 +257,7 @@ def get_det_res(buffer, show=False):
     # gauss_mixture.visualize_pts(im_diff.reshape(-1, 3)[::50], im_diff.reshape(-1, 3)[::50], c, r)
 
     im2, found_cntr = draw_rect(im_avg2, cl_res_dil)
-    pts[:, 0, 0] = pts[:, 0, 0] / 1280.0 * 480
-    pts[:, 0, 1] = pts[:, 0, 1] / 720.0 * 360
+
     im2 = cv.polylines(im2, [pts], True, (255, 0, 0), thickness=3)
     im2 = cv.polylines(im2, [pts], True, (255, 0, 0))
 
