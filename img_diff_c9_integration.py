@@ -236,7 +236,7 @@ def get_det_res(buffer, show=False):
     pts_Z30 = np.array([[0, 347], [569, 128], [1080, 220], [1008, 719], [683, 719], [0, 356]])
     pts_Z50 = np.array([[0, 347], [569, 128], [1080, 220], [1008, 719], [553, 719], [0, 356]])
     pts_Z70 = np.array([[0, 443], [298, 720], [1000, 720], [1085, 205], [574, 102]])
-    pts = pts_Z30
+    pts = pts_Z10
     pts = pts.reshape((-1, 1, 2))
     maskAOI = getAOIMask(img_shape=im_avg1.shape, poly_pts=pts)
     im_diff = getImDiff(im_avg1, im_avg2, maskAOI=maskAOI, method="saturation")
