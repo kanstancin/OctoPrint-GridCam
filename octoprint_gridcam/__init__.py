@@ -411,8 +411,9 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         # save imgs
         im1 = avg_imgs(buff[-2, 0:5])
         im2 = avg_imgs(buff[-2, 5:])
-        filename_img1 = os.path.join('logs', f"img_{self.prev_im_counter}_{self.get_timestamp()}_{str(int(det_res))}_1.jpg")
-        filename_img2 = os.path.join('logs', f"img_{self.prev_im_counter}_{self.get_timestamp()}_{str(int(det_res))}_2.jpg")
+        log_folder = '/home/pi/OctoPrint-GridCam/logs'
+        filename_img1 = os.path.join(log_folder, f"img_{self.prev_im_counter}_{self.get_timestamp()}_{str(int(det_res))}_1.jpg")
+        filename_img2 = os.path.join(log_folder, f"img_{self.prev_im_counter}_{self.get_timestamp()}_{str(int(det_res))}_2.jpg")
         # np.save(filename_imgs, imgs[-1])
         cv.imwrite(filename_img1, im1)
         cv.imwrite(filename_img2, im2)
