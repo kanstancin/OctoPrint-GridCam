@@ -393,7 +393,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
                 if imgs is not None:
                     self.im_det, self.found_cntr = get_det_res(imgs, show=False)
                     # save imgs
-                    # self.log_imgs(imgs, self.found_cntr)
+                    self.log_imgs(imgs, self.found_cntr)
                 # update buffer size
                 if self.buffer_size < buff_len:
                     self.buffer_size += 1
