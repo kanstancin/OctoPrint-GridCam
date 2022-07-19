@@ -39,7 +39,7 @@ def addCornerCommandsGcode(txt, step, offset_g28=100):
         line_i += step + len(cmd)
     return txt
 
-filename = "ASA-Gear-3 (5).gcode"
+filename = "ELEEL-107-E2B-CameraEnclosureV4 (2).gcode"
 path = "/home/cstar/workspace/OctoPrint-GridCam/gcodes/" + filename
 
 # gcode = readFile(path)
@@ -51,7 +51,7 @@ path = "/home/cstar/workspace/OctoPrint-GridCam/gcodes/" + filename
 #     f.write('\n'.join(gcode))
 
 
-filename = "ASA-Gear-3 (5)_no_E.gcode"
+filename = "ELEEL-107-E2B-CameraEnclosureV4 (2)_no_E.gcode"
 path = "/home/cstar/workspace/OctoPrint-GridCam/gcodes/" + filename
 gcode = readFile(path)
 gcode = addCornerCommandsGcode(gcode, 100, offset_g28=100)

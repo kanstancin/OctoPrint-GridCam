@@ -156,6 +156,7 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
         ret, img = self.get_img_stream()
         # ret, img = self.cam.read()
         img = cv.resize(img, (480, 360), interpolation=cv.INTER_AREA)
+        img = cv.rotate(img, cv.ROTATE_180)
         self.img = img
         self.im_counter += 1
         # while (ret == False):
