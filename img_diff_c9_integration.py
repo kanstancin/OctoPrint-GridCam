@@ -52,8 +52,8 @@ def prepropImg(img, kernel=(15, 15)):
 
 
 def getImDiff(im1, im2, maskAOI=None, method="saturation"):
-    im1_hsv = prepropImg(im1, kernel=(3, 3))
-    im2_hsv = prepropImg(im2, kernel=(3, 3))
+    im1_hsv = prepropImg(im1, kernel=(25, 25))
+    im2_hsv = prepropImg(im2, kernel=(25, 25))
 
     # to process
     im_diff = im1_hsv - im2_hsv  # s_diff.copy()  # s_diff best
@@ -243,7 +243,7 @@ def get_det_res(buffer, show=False):
     maskAOI = getAOIMask(img_shape=im_avg1.shape, poly_pts=pts)
     im_diff = getImDiff(im_avg1, im_avg2, maskAOI=maskAOI, method="saturation")
     # find ellipse
-    c, r = gauss_mixture.get_ellipse_no_frg(im_diff.reshape(-1, 3)[::200].astype(np.int16), show=False)
+    c, r = gauss_mixture.get_ellipse_no_frg(im_diff.reshape(-1, 3)[::70].astype(np.int16), show=False)
     print("Found ellipse: ", c, r)
     # classify and get result
     im_avg1 = avg_imgs(buffer[0, :5])
@@ -252,11 +252,11 @@ def get_det_res(buffer, show=False):
 
     # cl_res = classify_circle(im_diff[:, :, :], rad=10, cx=0,  cy=0, cz=0)
     cl_res = classify_ellipse(im_diff[:, :, :], c, r)
-    cl_res_dil = smart_dilate(im_diff, cl_res, c, r, std_div=9, stds_num=2)
+    # cl_res_dil = smart_dilate(im_diff, cl_res, c, r, std_div=9, stds_num=2)
 
     # gauss_mixture.visualize_pts(im_diff.reshape(-1, 3)[::50], im_diff.reshape(-1, 3)[::50], c, r)
 
-    im2, found_cntr = draw_rect(im_avg2, cl_res_dil)
+    im2, found_cntr = draw_rect(im_avg2, cl_res)
 
     im2 = cv.polylines(im2, [pts], True, (255, 0, 0), thickness=3)
     im2 = cv.polylines(im2, [pts], True, (255, 0, 0))
