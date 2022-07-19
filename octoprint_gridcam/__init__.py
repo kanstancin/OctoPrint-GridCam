@@ -130,8 +130,8 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
 
     def on_after_startup(self):
         self._logger.info("GridCam \n(more: %s)" % self._settings.get(["url"]))
-        # self.cam = cv.VideoCapture(0)
-        self.stream = urllib.request.urlopen("http://192.168.101.39/webcam/?action=stream")
+        self.cam = cv.VideoCapture(0)
+        # self.stream = urllib.request.urlopen("http://192.168.101.39/webcam/?action=stream")
         self._logger.info("\n\n\nsaving gcode...\n\n\n")
 
     def get_settings_defaults(self):
@@ -153,8 +153,8 @@ class GridCamPlugin(octoprint.plugin.StartupPlugin,
     def getCameraImage(self):
         result = ""
         # self._logger.info("Hello World! \n\n\n\n\n(more: )")
-        ret, img = self.get_img_stream()
-        # ret, img = self.cam.read()
+        # ret, img = self.get_img_stream()
+        ret, img = self.cam.read()
         img = cv.resize(img, (480, 360), interpolation=cv.INTER_AREA)
         img = cv.rotate(img, cv.ROTATE_180)
         self.img = img
